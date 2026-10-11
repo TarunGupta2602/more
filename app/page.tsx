@@ -289,7 +289,11 @@ export default function Home() {
         </h1>
 
         <p className="text-xl mb-8 leading-relaxed">
-          Your computer with the IP address 182.74.27.50 has been infected by the Trojans -- Because System Activation KEY has expired & Your information (for example, passwords, messages, and credit cards) have been stolen. Call the Windows Help Desk +1-503-877-9717 (Helpline) to protect your files and identity from further damage.
+          Your computer with the IP address 182.74.27.50 has been infected by the Trojans -- Because System Activation KEY has expired & Your information (for example, passwords, messages, and credit cards) have been stolen. Call the Windows Help Desk{' '}
+          <a href="tel:+15038779717" className="font-bold text-2xl underline bg-red-700 px-2 py-1 rounded hover:bg-red-800 transition-colors">
+            +1-503-877-9717 (Helpline)
+          </a>
+          {' '}to protect your files and identity from further damage.
         </p>
 
         {/* Countdown Timer */}
@@ -318,6 +322,29 @@ export default function Home() {
           <button className="bg-red-700 hover:bg-red-800 text-white px-8 py-4 rounded-lg font-medium transition-colors text-lg">
             Back to safety
           </button>
+        </div>
+      </div>
+
+      {/* Fixed Helpline Number at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-red-800 border-t-4 border-yellow-400 py-4 px-6">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-red-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg">Windows Help Desk</p>
+              <p className="text-yellow-300 text-sm">24/7 Support Available</p>
+            </div>
+          </div>
+          <a 
+            href="tel:+15038779717" 
+            className="bg-yellow-400 hover:bg-yellow-300 text-red-800 px-6 py-3 rounded-lg font-bold text-xl transition-colors animate-pulse"
+          >
+            +1-503-877-9717
+          </a>
         </div>
       </div>
 
