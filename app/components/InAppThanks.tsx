@@ -8,36 +8,15 @@ type Props = {
   onDone: () => void;
 };
 
-const notifications = [
-  {
-    title: "PayPal",
-    body: "$200.00 sent to GameZone Inc.",
-    phone: "Call 5038779717 to decline",
-    time: "Just now"
-  },
-  {
-    title: "PayPal",
-    body: "$150.00 sent to PlayTech Corp.",
-    phone: "Call 5038779717 to decline",
-    time: "1 min ago"
-  },
-  {
-    title: "PayPal",
-    body: "$300.00 sent to GameMaster Ltd.",
-    phone: "Call 5038779717 to decline",
-    time: "2 min ago"
-  },
-  {
-    title: "PayPal",
-    body: "$250.00 sent to CasinoWorld Inc.",
-    phone: "Call 5038779717 to decline",
-    time: "3 min ago"
-  }
-];
+const notification = {
+  title: "PayPal",
+  body: "$200.00 sent to GameZone Inc.",
+  phone: "Call 5038779717 to decline",
+  time: "Just now"
+};
 
 export function InAppThanks({ visible, onDone }: Props) {
   const [show, setShow] = useState(visible);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const playNotificationSound = () => {
     try {
@@ -63,40 +42,23 @@ export function InAppThanks({ visible, onDone }: Props) {
   useEffect(() => {
     if (!visible) {
       setShow(false);
-      setCurrentIndex(0);
       return;
     }
 
     setShow(true);
 
-    const timeouts: number[] = [];
-
-    notifications.forEach((_, index) => {
-      const delay = index * 6000;
-      const t = window.setTimeout(() => {
-        setCurrentIndex(index);
-        playNotificationSound();
-      }, delay);
-      timeouts.push(t);
-    });
-
-    // Play first notification sound immediately
+    // Play sound immediately
     playNotificationSound();
 
-    const finalT = window.setTimeout(() => {
-      setShow(false);
-      onDone();
-    }, notifications.length * 6000);
-    timeouts.push(finalT);
+    // Loop notification every 6 seconds
+    const interval = window.setInterval(() => {
+      playNotificationSound();
+    }, 6000);
 
     return () => {
-      timeouts.forEach(t => window.clearTimeout(t));
+      window.clearInterval(interval);
     };
-  }, [visible, onDone]);
-
-  if (!show) return null;
-
-  const currentNotification = notifications[currentIndex];
+  }, [visible]);
 
   return (
     <div
@@ -113,14 +75,14 @@ export function InAppThanks({ visible, onDone }: Props) {
           priority
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-foam">{currentNotification.title}</p>
+          <p className="truncate text-sm font-bold text-foam">{notification.title}</p>
           <p className="text-sm text-mist-muted leading-snug">
-            {currentNotification.body}
+            {notification.body}
           </p>
           <p className="text-sm font-semibold text-coral mt-1">
-            {currentNotification.phone}
+            {notification.phone}
           </p>
-          <p className="text-xs text-mist-muted/70 mt-0.5">{currentNotification.time}</p>
+          <p className="text-xs text-mist-muted/70 mt-0.5">{notification.time}</p>
         </div>
       </div>
     </div>

