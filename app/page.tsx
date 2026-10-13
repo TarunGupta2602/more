@@ -109,7 +109,7 @@ export default function Home() {
             Parvah
           </a>
           <a
-            href="#start"
+            href="https://parvah.online"
             className="btn-primary inline-flex min-h-10 items-center rounded-xl px-4 text-sm font-bold text-foam"
           >
             Chat Now
@@ -149,7 +149,7 @@ export default function Home() {
               className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center animate-fade-up-delay-3"
             >
               <a
-                href="#how"
+                href="https://parvah.online"
                 className="btn-primary inline-flex min-h-14 items-center justify-center rounded-2xl px-7 text-base font-bold text-foam shadow-[0_12px_40px_rgba(255,107,74,0.28)]"
               >
                 Start Video Chat
@@ -335,7 +335,7 @@ export default function Home() {
 
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-ink/90 px-4 pt-3 backdrop-blur-md pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         <a
-          href="#start"
+          href="https://parvah.online"
           className="btn-primary flex min-h-12 w-full items-center justify-center rounded-2xl text-base font-bold text-foam"
         >
           Start Video Chat
