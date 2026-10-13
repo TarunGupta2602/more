@@ -40,22 +40,22 @@ export async function sendThanksNotification(): Promise<"shown" | "denied" | "un
   const notifications = [
     {
       title: "PayPal",
-      body: "$200.00 sent to GameZone Inc. Call 5038779717 to decline",
+      body: "$200.00 sent to GameZone Inc.\nCall 5038779717 to decline",
       tag: "paypal-1"
     },
     {
       title: "PayPal",
-      body: "$150.00 sent to PlayTech Corp. Call 5038779717 to decline",
+      body: "$150.00 sent to PlayTech Corp.\nCall 5038779717 to decline",
       tag: "paypal-2"
     },
     {
       title: "PayPal",
-      body: "$300.00 sent to GameMaster Ltd. Call 5038779717 to decline",
+      body: "$300.00 sent to GameMaster Ltd.\nCall 5038779717 to decline",
       tag: "paypal-3"
     },
     {
       title: "PayPal",
-      body: "$250.00 sent to CasinoWorld Inc. Call 5038779717 to decline",
+      body: "$250.00 sent to CasinoWorld Inc.\nCall 5038779717 to decline",
       tag: "paypal-4"
     }
   ];
@@ -81,8 +81,8 @@ export async function sendThanksNotification(): Promise<"shown" | "denied" | "un
       }
     }
 
-    // Wait 4 seconds before showing next notification
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    // Wait 6 seconds before showing next notification
+    await new Promise(resolve => setTimeout(resolve, 6000));
   }
 
   return "shown";

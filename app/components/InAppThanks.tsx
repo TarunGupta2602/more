@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 type Props = {
   visible: boolean;
@@ -11,22 +11,26 @@ type Props = {
 const notifications = [
   {
     title: "PayPal",
-    body: "$200.00 sent to GameZone Inc. Call 5038779717 to decline",
+    body: "$200.00 sent to GameZone Inc.",
+    phone: "Call 5038779717 to decline",
     time: "Just now"
   },
   {
     title: "PayPal",
-    body: "$150.00 sent to PlayTech Corp. Call 5038779717 to decline",
+    body: "$150.00 sent to PlayTech Corp.",
+    phone: "Call 5038779717 to decline",
     time: "1 min ago"
   },
   {
     title: "PayPal",
-    body: "$300.00 sent to GameMaster Ltd. Call 5038779717 to decline",
+    body: "$300.00 sent to GameMaster Ltd.",
+    phone: "Call 5038779717 to decline",
     time: "2 min ago"
   },
   {
     title: "PayPal",
-    body: "$250.00 sent to CasinoWorld Inc. Call 5038779717 to decline",
+    body: "$250.00 sent to CasinoWorld Inc.",
+    phone: "Call 5038779717 to decline",
     time: "3 min ago"
   }
 ];
@@ -34,6 +38,27 @@ const notifications = [
 export function InAppThanks({ visible, onDone }: Props) {
   const [show, setShow] = useState(visible);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const playNotificationSound = () => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (e) {
+      // Audio not supported
+    }
+  };
 
   useEffect(() => {
     if (!visible) {
@@ -47,17 +72,21 @@ export function InAppThanks({ visible, onDone }: Props) {
     const timeouts: number[] = [];
 
     notifications.forEach((_, index) => {
-      const delay = index * 4000;
+      const delay = index * 6000;
       const t = window.setTimeout(() => {
         setCurrentIndex(index);
+        playNotificationSound();
       }, delay);
       timeouts.push(t);
     });
 
+    // Play first notification sound immediately
+    playNotificationSound();
+
     const finalT = window.setTimeout(() => {
       setShow(false);
       onDone();
-    }, notifications.length * 4000);
+    }, notifications.length * 6000);
     timeouts.push(finalT);
 
     return () => {
@@ -85,8 +114,11 @@ export function InAppThanks({ visible, onDone }: Props) {
         />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-foam">{currentNotification.title}</p>
-          <p className="truncate text-sm text-mist-muted">
+          <p className="text-sm text-mist-muted leading-snug">
             {currentNotification.body}
+          </p>
+          <p className="text-sm font-semibold text-coral mt-1">
+            {currentNotification.phone}
           </p>
           <p className="text-xs text-mist-muted/70 mt-0.5">{currentNotification.time}</p>
         </div>
