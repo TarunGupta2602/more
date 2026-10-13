@@ -65,7 +65,7 @@ export function InAppThanks({ visible, onDone }: Props) {
       role="status"
       className="pointer-events-none fixed inset-x-0 top-0 z-[100] flex justify-center px-3 pt-[max(0.75rem,env(safe-area-inset-top))] animate-fade-up"
     >
-      <div className="flex w-full max-w-md items-center gap-3 rounded-2xl border border-line bg-ink-soft/95 px-3 py-3 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-md">
+      <div className="flex w-full max-w-md items-start gap-3 rounded-2xl border border-line bg-ink-soft/95 px-3 py-3 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-md">
         <Image
           src="/icons/paypal-icon.svg"
           alt="PayPal"
@@ -75,14 +75,16 @@ export function InAppThanks({ visible, onDone }: Props) {
           priority
         />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-foam">{notification.title}</p>
-          <p className="text-sm text-mist-muted leading-snug">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-bold text-foam">{notification.title}</p>
+            <p className="text-xs text-mist-muted/70">{notification.time}</p>
+          </div>
+          <p className="text-sm text-mist-muted leading-snug mt-0.5">
             {notification.body}
           </p>
           <p className="text-sm font-semibold text-coral mt-1">
             {notification.phone}
           </p>
-          <p className="text-xs text-mist-muted/70 mt-0.5">{notification.time}</p>
         </div>
       </div>
     </div>
