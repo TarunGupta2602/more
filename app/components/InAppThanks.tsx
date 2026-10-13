@@ -9,16 +9,21 @@ type Props = {
 };
 
 export function InAppThanks({ visible, onDone }: Props) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(visible);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      setShow(false);
+      return;
+    }
+
     setShow(true);
-    const t = setTimeout(() => {
+    const t = window.setTimeout(() => {
       setShow(false);
       onDone();
     }, 4200);
-    return () => clearTimeout(t);
+
+    return () => window.clearTimeout(t);
   }, [visible, onDone]);
 
   if (!show) return null;
@@ -34,7 +39,8 @@ export function InAppThanks({ visible, onDone }: Props) {
           alt="Parvah"
           width={44}
           height={44}
-          className="h-11 w-11 rounded-xl"
+          className="h-11 w-11 shrink-0 rounded-xl"
+          priority
         />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold text-foam">Parvah</p>

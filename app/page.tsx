@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { InAppThanks } from "./components/InAppThanks";
-import { sendThanksNotification } from "./lib/notifications";
+import {
+  registerParvahWorker,
+  sendThanksNotification,
+} from "./lib/notifications";
 
 const faqs = [
   {
@@ -28,65 +31,75 @@ export default function Home() {
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [showThanks, setShowThanks] = useState(false);
+  const [entering, setEntering] = useState(false);
 
   const hideThanks = useCallback(() => setShowThanks(false), []);
 
+  useEffect(() => {
+    void registerParvahWorker();
+  }, []);
+
   const enterSite = async () => {
-    setAgeConfirmed(true);
+    if (entering) return;
+    setEntering(true);
+    // Show branded banner immediately on the same screen (before page swap).
     setShowThanks(true);
+    // Keep this in the click gesture so the browser permission prompt works.
     await sendThanksNotification();
+    setAgeConfirmed(true);
+    setEntering(false);
   };
 
-  if (!ageConfirmed) {
-    return (
-      <main className="relative min-h-dvh overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/hero-parvah.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,28,26,0.55)_0%,rgba(15,28,26,0.72)_45%,rgba(15,28,26,0.96)_100%)]" />
-        </div>
-
-        <div className="relative z-10 flex min-h-dvh flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
-          <p className="animate-fade-up font-display text-[clamp(2.75rem,12vw,4.5rem)] font-extrabold leading-none tracking-tight text-foam">
-            Parvah
-          </p>
-
-          <div className="mt-auto max-w-md animate-fade-up-delay-1">
-            <h1 className="font-display text-[1.75rem] font-bold leading-tight text-foam sm:text-3xl">
-              Adults only. Confirm your age to enter.
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-mist-muted">
-              Parvah is for people 18 and older. Free random video chat — no
-              signup required.
-            </p>
-          </div>
-
-          <div className="mt-8 space-y-3 animate-fade-up-delay-2">
-            <button
-              type="button"
-              onClick={enterSite}
-              className="btn-primary min-h-14 w-full rounded-2xl px-6 text-base font-bold text-foam shadow-[0_12px_40px_rgba(255,107,74,0.28)]"
-            >
-              I am 18 or older — Enter
-            </button>
-            <p className="text-center text-sm text-mist-muted">
-              By entering, you agree to our Terms of Service.
-            </p>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <div className="min-h-dvh bg-ink text-mist">
+    <>
       <InAppThanks visible={showThanks} onDone={hideThanks} />
+
+      {!ageConfirmed ? (
+        <main className="relative min-h-dvh overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src="/hero-parvah.jpg"
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,28,26,0.55)_0%,rgba(15,28,26,0.72)_45%,rgba(15,28,26,0.96)_100%)]" />
+          </div>
+
+          <div className="relative z-10 flex min-h-dvh flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
+            <p className="animate-fade-up font-display text-[clamp(2.75rem,12vw,4.5rem)] font-extrabold leading-none tracking-tight text-foam">
+              Parvah
+            </p>
+
+            <div className="mt-auto max-w-md animate-fade-up-delay-1">
+              <h1 className="font-display text-[1.75rem] font-bold leading-tight text-foam sm:text-3xl">
+                Adults only. Confirm your age to enter.
+              </h1>
+              <p className="mt-3 text-base leading-relaxed text-mist-muted">
+                Parvah is for people 18 and older. Free random video chat — no
+                signup required.
+              </p>
+            </div>
+
+            <div className="mt-8 space-y-3 animate-fade-up-delay-2">
+              <button
+                type="button"
+                onClick={enterSite}
+                disabled={entering}
+                className="btn-primary min-h-14 w-full rounded-2xl px-6 text-base font-bold text-foam shadow-[0_12px_40px_rgba(255,107,74,0.28)] disabled:opacity-70"
+              >
+                {entering ? "Entering…" : "I am 18 or older — Enter"}
+              </button>
+              <p className="text-center text-sm text-mist-muted">
+                By entering, you agree to our Terms of Service.
+              </p>
+            </div>
+          </div>
+        </main>
+      ) : (
+    <div className="min-h-dvh bg-ink text-mist">
       <header className="sticky top-0 z-40 border-b border-line bg-ink/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 pt-[env(safe-area-inset-top)] sm:h-16 sm:px-6">
           <a
@@ -329,5 +342,7 @@ export default function Home() {
         </a>
       </div>
     </div>
+      )}
+    </>
   );
 }
